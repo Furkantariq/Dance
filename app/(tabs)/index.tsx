@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import { router } from 'expo-router';
 import { useVideoPlayer, VideoView } from 'expo-video';
 import React, { useRef, useState } from 'react';
 import {
