@@ -75,6 +75,31 @@ export const useVideos = () => {
       if (userError) throw userError;
       if (!user) throw new Error('Not authenticated');
 
+      // Ensure user profile exists in public.users table
+      const { data: existingProfile, error: profileError } = await supabase
+        .from('users')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+
+      if (profileError && profileError.code === 'PGRST116') {
+        // Profile doesn't exist, create it
+        const { error: createError } = await supabase
+          .from('users')
+          .insert({
+            id: user.id,
+            email: user.email || '',
+            username: user.user_metadata?.username || `user_${user.id.substring(0, 8)}`,
+            full_name: user.user_metadata?.full_name || 'New User',
+            avatar_url: user.user_metadata?.avatar_url,
+            bio: user.user_metadata?.bio || '',
+          });
+        
+        if (createError) throw createError;
+      } else if (profileError) {
+        throw profileError;
+      }
+
       const { data, error } = await supabase
         .from('videos')
         .insert({

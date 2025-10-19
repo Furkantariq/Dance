@@ -33,10 +33,13 @@ const supabaseAnonKey = 'your-anon-key-here';
 Run the following SQL in your Supabase SQL Editor:
 
 ```sql
--- Enable Row Level Security
-ALTER TABLE auth.users ENABLE ROW LEVEL SECURITY;
+-- Drop existing tables and views if they exist (to start fresh)
+DROP VIEW IF EXISTS public.leaderboard CASCADE;
+DROP TABLE IF EXISTS public.videos CASCADE;
+DROP TABLE IF EXISTS public.users CASCADE;
+DROP FUNCTION IF EXISTS public.handle_new_user() CASCADE;
 
--- Create users table
+-- Create users table (public profile data)
 CREATE TABLE public.users (
   id UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
   email TEXT UNIQUE NOT NULL,
@@ -71,7 +74,6 @@ SELECT
   v.id as video_id,
   v.score,
   ROW_NUMBER() OVER (ORDER BY v.score DESC) as rank,
-  u.id as user_id,
   u.email,
   u.username,
   u.full_name,
@@ -91,37 +93,29 @@ FROM public.videos v
 JOIN public.users u ON v.user_id = u.id
 ORDER BY v.score DESC;
 
--- Set up Row Level Security policies
+-- Enable Row Level Security on TABLES only
 ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.videos ENABLE ROW LEVEL SECURITY;
 
--- Users can read all users
+-- Create RLS policies for users table
 CREATE POLICY "Users can read all users" ON public.users
   FOR SELECT USING (true);
 
--- Users can update their own profile
 CREATE POLICY "Users can update own profile" ON public.users
   FOR UPDATE USING (auth.uid() = id);
 
--- Users can insert their own profile
 CREATE POLICY "Users can insert own profile" ON public.users
   FOR INSERT WITH CHECK (auth.uid() = id);
 
--- Videos can be read by everyone
+-- Create RLS policies for videos table
 CREATE POLICY "Videos can be read by everyone" ON public.videos
   FOR SELECT USING (true);
 
--- Users can insert their own videos
 CREATE POLICY "Users can insert own videos" ON public.videos
   FOR INSERT WITH CHECK (auth.uid() = user_id);
 
--- Users can update their own videos
 CREATE POLICY "Users can update own videos" ON public.videos
   FOR UPDATE USING (auth.uid() = user_id);
-
--- Leaderboard can be read by everyone
-CREATE POLICY "Leaderboard can be read by everyone" ON public.leaderboard
-  FOR SELECT USING (true);
 
 -- Create function to handle user creation
 CREATE OR REPLACE FUNCTION public.handle_new_user()
