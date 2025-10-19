@@ -1,7 +1,8 @@
 import { router } from 'expo-router';
 import React, { useEffect, useRef } from 'react';
-import { Animated, Image, StyleSheet, Text, View } from 'react-native';
+import { Animated, Image, Text, View } from 'react-native';
 import { useAuth } from '../hooks/useAuth';
+import '../global.css';
 
 export default function Index() {
   const { session, isLoading } = useAuth();
@@ -44,82 +45,37 @@ export default function Index() {
   }, [session, isLoading]);
 
   return (
-    <View style={styles.container}>
-      <View style={styles.contentContainer}>
-        <Animated.View style={[styles.logoContainer, { transform: [{ scale: pulseAnim }] }]}>
-          <Image source={require('../assets/images/splash-icon.png')} style={styles.logo} />
+    <View className="flex-1 bg-gray-900">
+      <View className="flex-1 justify-center items-center px-6">
+        <Animated.View 
+          className="bg-gray-800 rounded-full p-6 mb-8 shadow-lg"
+          style={{ 
+            transform: [{ scale: pulseAnim }],
+            shadowColor: '#9333EA',
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.3,
+            shadowRadius: 8,
+            elevation: 8,
+          }}
+        >
+          <Image 
+            source={require('../assets/images/splash-icon.png')} 
+            className="w-30 h-30"
+            style={{ resizeMode: 'contain' }}
+          />
         </Animated.View>
         
-        <View style={styles.textContainer}>
-          <Text style={styles.title}>Dance Battle</Text>
-          <Text style={styles.subtitle}>Where dancers compete</Text>
+        <View className="items-center mb-12">
+          <Text className="text-4xl font-bold text-white mb-2 text-center">Dance Battle</Text>
+          <Text className="text-lg text-gray-400 text-center">Where dancers compete</Text>
         </View>
         
         {isLoading && (
-          <View style={styles.loadingContainer}>
-            <Text style={styles.loadingText}>Loading...</Text>
+          <View className="bg-gray-800 rounded-xl px-6 py-3">
+            <Text className="text-base text-white font-medium">Loading...</Text>
           </View>
         )}
       </View>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#111827',
-  },
-  contentContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 24,
-  },
-  logoContainer: {
-    backgroundColor: '#1F2937',
-    borderRadius: 100,
-    padding: 24,
-    marginBottom: 32,
-    shadowColor: '#9333EA',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 8,
-  },
-  logo: {
-    width: 120,
-    height: 120,
-    resizeMode: 'contain',
-  },
-  textContainer: {
-    alignItems: 'center',
-    marginBottom: 48,
-  },
-  title: {
-    fontSize: 36,
-    fontWeight: 'bold',
-    color: '#ffffff',
-    marginBottom: 8,
-    textAlign: 'center',
-  },
-  subtitle: {
-    fontSize: 18,
-    color: '#9CA3AF',
-    textAlign: 'center',
-  },
-  loadingContainer: {
-    backgroundColor: '#1F2937',
-    borderRadius: 12,
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-  },
-  loadingText: {
-    fontSize: 16,
-    color: '#ffffff',
-    fontWeight: '500',
-  },
-});
