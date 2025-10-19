@@ -1,7 +1,6 @@
 import { router } from 'expo-router';
 import React, { useEffect, useRef } from 'react';
 import { Animated, Image, Text, View } from 'react-native';
-import tw from 'twrnc';
 import '../global.css';
 import { useAuth } from '../hooks/useAuth';
 
@@ -46,36 +45,34 @@ export default function Index() {
   }, [session, isLoading]);
 
   return (
-    <View style={tw`flex-1 bg-red-500`}>
-      <View style={tw`flex-1 justify-center items-center px-6`}>
+    <View className="flex-1 bg-red-500">
+      <View className="flex-1 justify-center items-center px-6">
         <Animated.View 
-          style={[
-            tw`bg-gray-800 rounded-full p-6 mb-8`,
-            { 
-              transform: [{ scale: pulseAnim }],
-              shadowColor: '#9333EA',
-              shadowOffset: { width: 0, height: 4 },
-              shadowOpacity: 0.3,
-              shadowRadius: 8,
-              elevation: 8,
-            }
-          ]}
+          className="bg-gray-800 rounded-full p-6 mb-8"
+          style={{ 
+            transform: [{ scale: pulseAnim }],
+            shadowColor: '#9333EA',
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.3,
+            shadowRadius: 8,
+            elevation: 8,
+          }}
         >
           <Image 
             source={require('../assets/images/splash-icon.png')} 
-            style={tw`w-32 h-32`}
-            resizeMode="contain"
+            className="w-32 h-32"
+            style={{ resizeMode: 'contain' }}
           />
         </Animated.View>
         
-        <View style={tw`items-center mb-12`}>
-          <Text style={tw`text-4xl font-bold text-white mb-2 text-center`}>Dance Battle</Text>
-          <Text style={tw`text-lg text-gray-400 text-center`}>Where dancers compete</Text>
+        <View className="items-center mb-12">
+          <Text className="text-4xl font-bold text-white mb-2 text-center">Dance Battle</Text>
+          <Text className="text-lg text-gray-400 text-center">Where dancers compete</Text>
         </View>
         
         {isLoading && (
-          <View style={tw`bg-gray-800 rounded-xl px-6 py-3`}>
-            <Text style={tw`text-base text-white font-medium`}>Loading...</Text>
+          <View className="bg-gray-800 rounded-xl px-6 py-3">
+            <Text className="text-base text-white font-medium">Loading...</Text>
           </View>
         )}
       </View>
