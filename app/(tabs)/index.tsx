@@ -3,13 +3,13 @@ import { router } from 'expo-router';
 import { useVideoPlayer, VideoView } from 'expo-video';
 import React, { useRef, useState } from 'react';
 import {
-    FlatList,
-    Image,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    useWindowDimensions,
-    View
+  FlatList,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  useWindowDimensions,
+  View
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useVideos } from '../../hooks/useVideos';
@@ -294,7 +294,6 @@ const styles = StyleSheet.create({
   scorePillText: { color: '#ffffff', fontWeight: '700', fontSize: 12 },
   views: { color: '#9CA3AF', fontSize: 12 },
   absoluteFill: { position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 },
-  center: { justifyContent: 'center', alignItems: 'center' },
   playOverlayButton: { backgroundColor: 'rgba(0,0,0,0.5)', borderRadius: 50, padding: 20 },
   loadingText: { color: '#ffffff', fontSize: 16 },
 });
