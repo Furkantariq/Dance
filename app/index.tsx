@@ -1,9 +1,9 @@
 import { router } from 'expo-router';
 import React, { useEffect, useRef } from 'react';
 import { Animated, Image, Text, View } from 'react-native';
+import tw from 'twrnc';
 import '../global.css';
 import { useAuth } from '../hooks/useAuth';
-import tw from 'twrnc';
 
 export default function Index() {
   const { session, isLoading } = useAuth();
