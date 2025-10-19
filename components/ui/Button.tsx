@@ -1,7 +1,5 @@
 import React from 'react';
 import { ActivityIndicator, Text, TouchableOpacity } from 'react-native';
-import '../../global.css';
-import tw from 'twrnc';
 
 interface ButtonProps {
   title: string;
@@ -72,7 +70,7 @@ export const Button: React.FC<ButtonProps> = ({
 
   return (
     <TouchableOpacity
-      style={tw`${getVariantClasses()} ${getSizeClasses()} rounded-xl items-center justify-center ${
+      className={`${getVariantClasses()} ${getSizeClasses()} rounded-xl items-center justify-center ${
         (disabled || loading) ? 'opacity-50' : ''
       } ${className}`}
       onPress={onPress}
@@ -82,7 +80,7 @@ export const Button: React.FC<ButtonProps> = ({
       {loading ? (
         <ActivityIndicator size="small" color="white" />
       ) : (
-        <Text style={tw`${getTextColor()} ${getTextSize()} font-semibold`}>
+        <Text className={`${getTextColor()} ${getTextSize()} font-semibold`}>
           {title}
         </Text>
       )}

@@ -5,13 +5,13 @@ import {
     KeyboardAvoidingView,
     Platform,
     ScrollView,
+    StyleSheet,
     Text,
     TextInput,
     TouchableOpacity,
     View,
 } from 'react-native';
 import { useAuth } from '../../hooks/useAuth';
-import '../../global.css';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -34,23 +34,23 @@ export default function LoginScreen() {
 
   return (
     <KeyboardAvoidingView 
-      className="flex-1"
+      style={{ flex: 1 }} 
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <View className="flex-1 bg-gray-900 px-6 py-12">
+        <View style={styles.container}>
           {/* Header */}
-          <View className="items-center mb-12">
-            <Text className="text-4xl font-bold text-white mb-2">Dance Battle</Text>
-            <Text className="text-lg text-gray-400">Welcome back!</Text>
+          <View style={styles.header}>
+            <Text style={styles.title}>Dance Battle</Text>
+            <Text style={styles.subtitle}>Welcome back!</Text>
           </View>
 
           {/* Login Form */}
-          <View className="gap-6">
-            <View className="mb-4">
-              <Text className="text-white text-base mb-2 font-medium">Email</Text>
+          <View style={styles.form}>
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>Email</Text>
               <TextInput
-                className="bg-gray-800 text-white px-4 py-4 rounded-xl border border-gray-700 text-base"
+                style={styles.input}
                 placeholder="Enter your email"
                 placeholderTextColor="#9CA3AF"
                 value={email}
@@ -61,10 +61,10 @@ export default function LoginScreen() {
               />
             </View>
 
-            <View className="mb-4">
-              <Text className="text-white text-base mb-2 font-medium">Password</Text>
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>Password</Text>
               <TextInput
-                className="bg-gray-800 text-white px-4 py-4 rounded-xl border border-gray-700 text-base"
+                style={styles.input}
                 placeholder="Enter your password"
                 placeholderTextColor="#9CA3AF"
                 value={password}
@@ -76,30 +76,30 @@ export default function LoginScreen() {
             </View>
 
             {error && (
-              <View className="bg-red-900/20 border border-red-500/50 rounded-xl p-4">
-                <Text className="text-red-400 text-center">
+              <View style={styles.errorContainer}>
+                <Text style={styles.errorText}>
                   {error.message || 'Login failed. Please try again.'}
                 </Text>
               </View>
             )}
 
             <TouchableOpacity
-              className={`bg-purple-600 py-4 rounded-xl ${isLoading ? 'opacity-50' : ''}`}
+              style={[styles.button, isLoading && styles.buttonDisabled]}
               onPress={handleLogin}
               disabled={isLoading}
             >
-              <Text className="text-white text-center text-lg font-semibold">
+              <Text style={styles.buttonText}>
                 {isLoading ? 'Signing In...' : 'Sign In'}
               </Text>
             </TouchableOpacity>
           </View>
 
           {/* Footer */}
-          <View className="mt-8 items-center">
-            <Text className="text-gray-400 mb-4">Don't have an account?</Text>
+          <View style={styles.footer}>
+            <Text style={styles.footerText}>Don't have an account?</Text>
             <Link href="/auth/register" asChild>
-              <TouchableOpacity className="bg-transparent border border-purple-600 py-3 px-8 rounded-xl">
-                <Text className="text-purple-400 text-center font-semibold">
+              <TouchableOpacity style={styles.linkButton}>
+                <Text style={styles.linkButtonText}>
                   Create Account
                 </Text>
               </TouchableOpacity>
@@ -110,3 +110,94 @@ export default function LoginScreen() {
     </KeyboardAvoidingView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#111827',
+    paddingHorizontal: 24,
+    paddingVertical: 48,
+  },
+  header: {
+    alignItems: 'center',
+    marginBottom: 48,
+  },
+  title: {
+    fontSize: 36,
+    fontWeight: 'bold',
+    color: '#ffffff',
+    marginBottom: 8,
+  },
+  subtitle: {
+    fontSize: 18,
+    color: '#9CA3AF',
+  },
+  form: {
+    gap: 24,
+  },
+  inputContainer: {
+    marginBottom: 16,
+  },
+  label: {
+    color: '#ffffff',
+    fontSize: 16,
+    marginBottom: 8,
+    fontWeight: '500',
+  },
+  input: {
+    backgroundColor: '#1F2937',
+    color: '#ffffff',
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#374151',
+    fontSize: 16,
+  },
+  errorContainer: {
+    backgroundColor: 'rgba(239, 68, 68, 0.2)',
+    borderWidth: 1,
+    borderColor: 'rgba(239, 68, 68, 0.5)',
+    borderRadius: 12,
+    padding: 16,
+  },
+  errorText: {
+    color: '#FCA5A5',
+    textAlign: 'center',
+  },
+  button: {
+    backgroundColor: '#9333EA',
+    paddingVertical: 16,
+    borderRadius: 12,
+  },
+  buttonDisabled: {
+    opacity: 0.5,
+  },
+  buttonText: {
+    color: '#ffffff',
+    textAlign: 'center',
+    fontSize: 18,
+    fontWeight: '600',
+  },
+  footer: {
+    marginTop: 32,
+    alignItems: 'center',
+  },
+  footerText: {
+    color: '#9CA3AF',
+    marginBottom: 16,
+  },
+  linkButton: {
+    backgroundColor: 'transparent',
+    borderWidth: 1,
+    borderColor: '#9333EA',
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 12,
+  },
+  linkButtonText: {
+    color: '#A855F7',
+    textAlign: 'center',
+    fontWeight: '600',
+  },
+});
