@@ -328,9 +328,69 @@ Supabase Database → React-Query → Custom Hooks → Components
 
 ## 🚀 Deployment & Build
 
+### Quick Start (No Build Required)
+```bash
+# Clone the repository
+git clone https://github.com/Furkantariq/Dance.git
+cd Dance
+
+# Install dependencies
+npm install
+
+# Start development server
+npm start
+
+# Scan QR code with Expo Go app on your phone
+# OR run on simulator/emulator
+npm run ios    # iOS Simulator
+npm run android # Android Emulator
+```
+
 ### Development Build
 ```bash
-npx expo start
+# Start development server
+npm start
+
+# Run on iOS simulator
+npm run ios
+
+# Run on Android emulator
+npm run android
+```
+
+### Production Build (Android APK)
+
+#### Step 1: Prebuild Native Code
+```bash
+# Clean and generate native Android/iOS code
+npx expo prebuild --clean
+
+# This creates android/ and ios/ folders with native code
+```
+
+#### Step 2: Build Android APK
+```bash
+# Navigate to Android directory
+cd android
+
+# Build Release APK (for production)
+./gradlew assembleRelease
+
+# Build Debug APK (for testing)
+./gradlew assembleDebug
+
+# APK files will be generated in:
+# android/app/build/outputs/apk/release/app-release.apk
+# android/app/build/outputs/apk/debug/app-debug.apk
+```
+
+#### Step 3: Install APK on Device
+```bash
+# Install release APK on connected Android device
+adb install android/app/build/outputs/apk/release/app-release.apk
+
+# Install debug APK for testing
+adb install android/app/build/outputs/apk/debug/app-debug.apk
 ```
 
 ### Production Build (EAS)
@@ -347,6 +407,33 @@ eas build --platform android
 # Build for iOS
 eas build --platform ios
 ```
+
+### Troubleshooting Build Issues
+
+#### Common Android Build Problems
+```bash
+# If prebuild fails, try cleaning everything
+npx expo prebuild --clean --clear
+
+# If Gradle build fails, clean Gradle cache
+cd android
+./gradlew clean
+./gradlew assembleRelease
+
+# If you get "SDK location not found" error
+# Set ANDROID_HOME environment variable
+export ANDROID_HOME=$HOME/Library/Android/sdk
+export PATH=$PATH:$ANDROID_HOME/emulator
+export PATH=$PATH:$ANDROID_HOME/tools
+export PATH=$PATH:$ANDROID_HOME/tools/bin
+export PATH=$PATH:$ANDROID_HOME/platform-tools
+```
+
+#### Prerequisites for Building
+- **Android Studio**: For Android SDK and emulator
+- **Xcode**: For iOS builds (macOS only)
+- **Node.js**: Version 18 or higher
+- **Java**: JDK 11 or higher for Android builds
 
 ## 🧪 Testing
 
