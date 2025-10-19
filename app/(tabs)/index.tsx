@@ -1,98 +1,262 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { useVideoPlayer, VideoView } from 'expo-video';
+import React, { useRef, useState } from 'react';
+import {
+    FlatList,
+    Image,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    useWindowDimensions,
+    View
+} from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useVideos } from '../../hooks/useVideos';
+import { Video as VideoType } from '../../lib/supabase';
 
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+// Use window dimensions to reflect current visible area
+// Recomputes on layout changes to keep the video perfectly fitted.
+function useScreenSize() {
+  const { width, height } = useWindowDimensions();
+  const isLandscape = width > height;
+  
+  return { 
+    width, 
+    height,
+    isLandscape,
+    // In landscape, use full screen dimensions
+    videoWidth: isLandscape ? width : width,
+    videoHeight: isLandscape ? height : height
+  };
+}
 
-export default function HomeScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
+export default function VideoFeedScreen() {
+  const { width, height, isLandscape, videoWidth, videoHeight } = useScreenSize();
+  const { videos, isLoading, likeVideo } = useVideos();
+  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const videoPlayers = useRef<{ [key: string]: any }>({});
+  const insets = useSafeAreaInsets();
+  // Calculate target height based on orientation
+  const TAB_BAR_HEIGHT = isLandscape ? 0 : 64; // Hide tab bar in landscape
+  const targetHeight = isLandscape 
+    ? height // Full height in landscape
+    : Math.max(0, height - insets.top - (insets.bottom + TAB_BAR_HEIGHT));
+
+  const handleVideoPress = () => {
+    setIsPlaying(!isPlaying);
+  };
+
+  const handleLike = (videoId: string) => {
+    likeVideo(videoId);
+  };
+
+  // Effect to control video playback when current video or play state changes
+  React.useEffect(() => {
+    videos.forEach((video, index) => {
+      const player = videoPlayers.current[video.id];
+      if (player) {
+        if (index === currentVideoIndex && isPlaying) {
+          player.play();
+        } else {
+          player.pause();
+        }
+      }
+    });
+  }, [currentVideoIndex, isPlaying, videos]);
+
+  const onViewableItemsChanged = useRef(({ viewableItems }: any) => {
+    if (viewableItems.length > 0) {
+      const currentIndex = viewableItems[0].index;
+      setCurrentVideoIndex(currentIndex);
+      
+      // Pause all videos except the current one
+      videos.forEach((video, index) => {
+        const player = videoPlayers.current[video.id];
+        if (player) {
+          if (index === currentIndex && isPlaying) {
+            player.play();
+          } else {
+            player.pause();
+          }
+        }
+      });
+    }
+  }).current;
+
+  const viewabilityConfig = {
+    itemVisiblePercentThreshold: 50,
+  };
+
+  const VideoItem = ({ item, index }: { item: VideoType; index: number }) => {
+    const isCurrentVideo = index === currentVideoIndex;
+    const player = useVideoPlayer(item.video_url, (player) => {
+      player.loop = true;
+      player.muted = false;
+    });
+    
+    // Store player reference for external control
+    videoPlayers.current[item.id] = player;
+    
+    // Control playback based on current video and play state
+    React.useEffect(() => {
+      if (isCurrentVideo && isPlaying) {
+        player.play();
+      } else {
+        player.pause();
+      }
+    }, [isCurrentVideo, isPlaying, player]);
+    
+    return (
+      <View style={[styles.slideBase, { width: videoWidth, height: targetHeight || videoHeight }]}>
+        {/* Video Player */}
+        <VideoView
+          style={{ width: videoWidth, height: targetHeight || videoHeight }}
+          player={player}
+          nativeControls={false}
         />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+        {/* Overlay Content */}
+        <View style={styles.overlayBottomContainer}>
+          {/* Right Side Actions */}
+          <View style={[
+            styles.actionsColumn, 
+            { 
+              bottom: isLandscape ? 16 : 32 + insets.bottom, 
+              right: isLandscape ? 16 : 16,
+              zIndex: 3 
+            }
+          ]}>
+            <TouchableOpacity
+              onPress={() => handleLike(item.id)}
+              style={styles.center}
+            >
+              <View style={styles.actionCircle}>
+                <Ionicons name="heart" size={32} color="white" />
+              </View>
+              <Text style={styles.actionLabel}>
+                {item.likes_count.toLocaleString()}
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.center} onPress={() => { /* Placeholder comment action */ }}>
+              <View style={styles.actionCircle}>
+                <Ionicons name="chatbubble" size={32} color="white" />
+              </View>
+              <Text style={styles.actionLabel}>Comment</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.center}>
+              <View style={styles.actionCircle}>
+                <Ionicons name="share" size={32} color="white" />
+              </View>
+              <Text style={styles.actionLabel}>Share</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Bottom Content */}
+          <View style={[
+            styles.bottomContent, 
+            { 
+              paddingBottom: isLandscape ? 20 : 40 + insets.bottom, 
+              paddingRight: isLandscape ? 120 : 80, // More space for actions in landscape
+              zIndex: 3 
+            }
+          ]}>
+            <View style={styles.userRow}>
+              <Image
+                source={{ uri: item.user?.avatar_url || 'https://picsum.photos/100/100' }}
+                style={styles.userAvatar}
+              />
+              <Text style={styles.username}>
+                @{item.user?.username}
+              </Text>
+            </View>
+            
+            <Text style={styles.title} numberOfLines={2}>
+              {item.title}
+            </Text>
+            
+            {item.description && (
+              <Text style={styles.description} numberOfLines={2}>
+                {item.description}
+              </Text>
+            )}
+
+            <View style={styles.metricsRow}>
+              <View style={styles.scorePill}>
+                <Text style={styles.scorePillText}>
+                  Score: {item.score}
+                </Text>
+              </View>
+              <Text style={styles.views}>
+                {item.views_count.toLocaleString()} views
+              </Text>
+            </View>
+          </View>
+        </View>
+
+        {/* Play/Pause Overlay */}
+        <TouchableOpacity
+          onPress={handleVideoPress}
+          style={[styles.absoluteFill, styles.center, { backgroundColor: isPlaying ? 'transparent' : 'rgba(0,0,0,0.3)', zIndex: 1 }]}
+        >
+          {!isPlaying && (
+            <View style={styles.playOverlayButton}>
+              <Ionicons name="play" size={48} color="white" />
+            </View>
+          )}
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
+  if (isLoading) {
+    return (
+      <View style={[styles.screen, styles.center]}>
+        <Text style={styles.loadingText}>Loading videos...</Text>
+      </View>
+    );
+  }
+
+  return (
+    <View style={styles.screen}>
+      <FlatList
+        data={videos}
+        renderItem={({ item, index }) => <VideoItem item={item} index={index} />}
+        keyExtractor={(item) => item.id}
+        pagingEnabled
+        showsVerticalScrollIndicator={false}
+        onViewableItemsChanged={onViewableItemsChanged}
+        viewabilityConfig={viewabilityConfig}
+        snapToInterval={targetHeight || videoHeight}
+        snapToAlignment="start"
+        decelerationRate="fast"
+        getItemLayout={(_, index) => ({ length: (targetHeight || videoHeight), offset: (targetHeight || videoHeight) * index, index })}
+      />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
+  screen: { flex: 1, backgroundColor: '#000000' },
+  slideBase: { position: 'relative' },
+  overlayBottomContainer: { position: 'absolute', left: 0, right: 0, bottom: 0, top: 0, justifyContent: 'flex-end' },
+  actionsColumn: { position: 'absolute', alignItems: 'center', gap: 16 },
+  actionCircle: { backgroundColor: 'rgba(0,0,0,0.35)', borderRadius: 999, padding: 12, marginBottom: 4 },
+  actionLabel: { color: '#ffffff', fontSize: 12, fontWeight: '600' },
+  bottomContent: { padding: 16 },
+  userRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 8 },
+  userAvatar: { width: 40, height: 40, borderRadius: 20, marginRight: 12 },
+  username: { color: '#ffffff', fontWeight: '600', fontSize: 16 },
+  title: { color: '#ffffff', fontSize: 16, marginBottom: 8 },
+  description: { color: '#D1D5DB', fontSize: 13, marginBottom: 8 },
+  metricsRow: { flexDirection: 'row', alignItems: 'center' },
+  scorePill: { backgroundColor: '#9333EA', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 999, marginRight: 12 },
+  scorePillText: { color: '#ffffff', fontWeight: '700', fontSize: 12 },
+  views: { color: '#9CA3AF', fontSize: 12 },
+  absoluteFill: { position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 },
+  center: { justifyContent: 'center', alignItems: 'center' },
+  playOverlayButton: { backgroundColor: 'rgba(0,0,0,0.5)', borderRadius: 50, padding: 20 },
+  loadingText: { color: '#ffffff', fontSize: 16 },
 });

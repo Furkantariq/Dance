@@ -3,7 +3,7 @@
     "name": "Dance",
     "slug": "Dance",
     "version": "1.0.0",
-    "orientation": "portrait",
+    "orientation": "default",
     "icon": "./assets/images/icon.png",
     "scheme": "dance",
     "userInterfaceStyle": "automatic",
@@ -19,7 +19,8 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.onlyfansderek.Dance"
     },
     "web": {
       "output": "static",
@@ -31,11 +32,11 @@
         "expo-splash-screen",
         {
           "image": "./assets/images/splash-icon.png",
-          "imageWidth": 200,
+          "imageWidth": 120,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff",
+          "backgroundColor": "#111827",
           "dark": {
-            "backgroundColor": "#000000"
+            "backgroundColor": "#111827"
           }
         }
       ]
