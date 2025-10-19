@@ -20,13 +20,13 @@ Dance Battle is a TikTok-style mobile application that allows users to participa
 - **TypeScript**: Type-safe development
 - **React-Query**: Efficient data fetching and caching
 - **Supabase**: Backend-as-a-Service for authentication and database
-- **Tailwind CSS**: Utility-first styling with NativeWind
+- **React Native StyleSheet**: Native styling API for optimal performance
 - **Video Streaming**: External video URL handling with Expo Video
 
 ## 🛠 Tech Stack
 
 - **Frontend**: React Native, Expo, TypeScript
-- **Styling**: Tailwind CSS (NativeWind)
+- **Styling**: React Native StyleSheet API
 - **State Management**: React-Query (@tanstack/react-query)
 - **Backend**: Supabase
 - **Navigation**: Expo Router
@@ -280,9 +280,37 @@ Supabase Database → React-Query → Custom Hooks → Components
 - **My Videos**: User's uploaded videos with statistics
 - **Settings**: App preferences and account management
 
-## 🎨 Design System
+## 🎨 Styling Architecture
 
-### Color Palette
+### Why React Native StyleSheet Over Tailwind?
+
+**We chose React Native StyleSheet API over Tailwind CSS for several important reasons:**
+
+#### ✅ **Performance Benefits**
+- **Native Performance**: StyleSheet API is optimized for React Native's rendering engine
+- **No Runtime Overhead**: Styles are processed at build time, not runtime
+- **Memory Efficient**: No additional CSS parsing or class name resolution
+- **Faster Rendering**: Direct style objects are more performant than utility classes
+
+#### ✅ **Mobile-First Design**
+- **Platform-Specific**: StyleSheet allows platform-specific styling (iOS vs Android)
+- **Native Components**: Better integration with React Native components
+- **Touch Optimization**: Optimized for mobile touch interactions and gestures
+- **Responsive Design**: Built-in support for device dimensions and orientation
+
+#### ✅ **Developer Experience**
+- **TypeScript Support**: Full type safety with StyleSheet.create()
+- **IntelliSense**: Better IDE support and autocomplete
+- **Debugging**: Easier to debug and inspect styles
+- **Consistency**: Follows React Native best practices
+
+#### ✅ **Production Ready**
+- **Battle Tested**: StyleSheet is the standard for React Native apps
+- **No Dependencies**: No additional libraries or build tools required
+- **Reliable**: No compatibility issues or breaking changes
+- **Scalable**: Works well for large, complex applications
+
+### Design System
 - **Primary**: Purple (#a855f7) - Modern, energetic
 - **Secondary**: Blue (#0ea5e9) - Trust, reliability
 - **Background**: Dark gray (#111827) - Modern mobile aesthetic
@@ -290,13 +318,13 @@ Supabase Database → React-Query → Custom Hooks → Components
 
 ### Typography
 - **System Fonts**: Native mobile typography
-- **Consistent Sizing**: Tailwind's type scale
+- **Consistent Sizing**: React Native's built-in font scaling
 - **Hierarchy**: Clear information architecture
 
 ### Components
 - **Reusable UI**: Button, Input components in `components/ui/`
-- **Consistent Styling**: Tailwind utility classes
-- **Mobile-First**: Touch-friendly interactions
+- **Consistent Styling**: StyleSheet.create() for type-safe styling
+- **Mobile-First**: Touch-friendly interactions optimized for mobile
 
 ## 🚀 Deployment & Build
 
