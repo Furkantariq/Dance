@@ -406,6 +406,36 @@ eas build --platform android
 
 # Build for iOS
 eas build --platform ios
+
+# Build for iOS Simulator (Development)
+eas build --platform ios-simulator --profile development
+```
+
+### iOS Simulator Build (Recommended for Testing)
+
+#### Step 1: Build iOS Simulator App
+```bash
+# Build for iOS Simulator using EAS
+eas build --platform ios-simulator --profile development
+
+# This creates a .app file that can be installed in iOS Simulator
+```
+
+#### Step 2: Install in iOS Simulator
+```bash
+# After build completes, download the .app file
+# Then drag and drop it into iOS Simulator
+# OR use xcrun simctl install command:
+xcrun simctl install booted path/to/your-app.app
+```
+
+#### Step 3: Run in Simulator
+```bash
+# Open iOS Simulator
+open -a Simulator
+
+# The app will appear in the simulator's home screen
+# Tap to launch and test
 ```
 
 ### Troubleshooting Build Issues
