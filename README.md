@@ -115,18 +115,31 @@ Supabase Database → React-Query → Custom Hooks → Components
    npm install
    ```
 
-3. **Set up Supabase**
+3. **Set up environment variables**
+   ```bash
+   # Copy the example environment file
+   cp .env.example .env
+   
+   # Edit .env with your Supabase credentials
+   # Update EXPO_PUBLIC_SUPABASE_URL and EXPO_PUBLIC_SUPABASE_ANON_KEY
+   ```
+
+4. **Set up Supabase**
    - Create a new Supabase project at [supabase.com](https://supabase.com)
    - Copy your project URL and anon key
-   - Update `lib/supabase.ts` with your credentials
+   - Update `.env` file with your Supabase credentials:
+     ```
+     EXPO_PUBLIC_SUPABASE_URL=your_supabase_project_url
+     EXPO_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+     ```
    - Run the SQL scripts in `scripts/seed-demo-data.sql` to set up the database schema
 
-4. **Start the development server**
+5. **Start the development server**
    ```bash
    npx expo start
    ```
 
-5. **Run on device/simulator**
+6. **Run on device/simulator**
    - Scan the QR code with Expo Go app (iOS/Android)
    - Or press `i` for iOS simulator, `a` for Android emulator
 
