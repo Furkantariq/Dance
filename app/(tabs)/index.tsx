@@ -219,6 +219,27 @@ export default function VideoFeedScreen() {
     );
   }
 
+  if (!videos || videos.length === 0) {
+    return (
+      <View style={[styles.screen, styles.center, styles.emptyState]}>
+        <View style={styles.emptyStateContent}>
+          <Ionicons name="videocam-outline" size={80} color="#6b7280" />
+          <Text style={styles.emptyStateTitle}>No Videos Yet</Text>
+          <Text style={styles.emptyStateSubtitle}>
+            Be the first to upload a dance video and start the competition!
+          </Text>
+          <TouchableOpacity 
+            style={styles.uploadButton}
+            onPress={() => router.push('/(tabs)/upload')}
+          >
+            <Ionicons name="cloud-upload" size={24} color="white" />
+            <Text style={styles.uploadButtonText}>Upload Your First Video</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.screen}>
       <FlatList
@@ -240,6 +261,7 @@ export default function VideoFeedScreen() {
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: '#000000' },
+  center: { justifyContent: 'center', alignItems: 'center' },
   slideBase: { position: 'relative' },
   overlayBottomContainer: { position: 'absolute', left: 0, right: 0, bottom: 0, top: 0, justifyContent: 'flex-end' },
   actionsColumn: { position: 'absolute', alignItems: 'center', gap: 16 },
@@ -247,6 +269,21 @@ const styles = StyleSheet.create({
   actionLabel: { color: '#ffffff', fontSize: 12, fontWeight: '600' },
   bottomContent: { padding: 16 },
   userRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 8 },
+  // Empty State Styles
+  emptyState: { backgroundColor: '#111827' },
+  emptyStateContent: { alignItems: 'center', paddingHorizontal: 32 },
+  emptyStateTitle: { fontSize: 24, fontWeight: 'bold', color: '#ffffff', marginTop: 16, marginBottom: 8 },
+  emptyStateSubtitle: { fontSize: 16, color: '#9ca3af', textAlign: 'center', lineHeight: 24, marginBottom: 32 },
+  uploadButton: { 
+    backgroundColor: '#a855f7', 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    paddingHorizontal: 24, 
+    paddingVertical: 12, 
+    borderRadius: 25,
+    gap: 8
+  },
+  uploadButtonText: { color: '#ffffff', fontSize: 16, fontWeight: '600' },
   userAvatar: { width: 40, height: 40, borderRadius: 20, marginRight: 12 },
   username: { color: '#ffffff', fontWeight: '600', fontSize: 16 },
   title: { color: '#ffffff', fontSize: 16, marginBottom: 8 },
