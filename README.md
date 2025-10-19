@@ -117,22 +117,15 @@ Supabase Database → React-Query → Custom Hooks → Components
 
 3. **Set up environment variables**
    ```bash
-   # Copy the example environment file
+   # Copy the example environment file (already configured with demo data)
    cp .env.example .env
-   
-   # Edit .env with your Supabase credentials
-   # Update EXPO_PUBLIC_SUPABASE_URL and EXPO_PUBLIC_SUPABASE_ANON_KEY
    ```
 
-4. **Set up Supabase**
-   - Create a new Supabase project at [supabase.com](https://supabase.com)
-   - Copy your project URL and anon key
-   - Update `.env` file with your Supabase credentials:
-     ```
-     EXPO_PUBLIC_SUPABASE_URL=your_supabase_project_url
-     EXPO_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-     ```
-   - Run the SQL scripts in `scripts/seed-demo-data.sql` to set up the database schema
+4. **Database Setup**
+   - The app uses a pre-configured Supabase database with demo data
+   - No additional setup required - just run the app!
+   - Demo data includes sample users, videos, and leaderboard entries
+   - You can register new accounts or use existing demo accounts
 
 5. **Start the development server**
    ```bash
